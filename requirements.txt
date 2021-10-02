@@ -1,6 +1,9 @@
 asgiref==3.4.1
 Django==3.2.7
+django-cors-headers==3.9.0
+django-crispy-forms==1.13.0
 django-environ==0.7.0
+django-filter==21.1
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.8.0
 Markdown==3.3.4

@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
 
-from account.managers import CustomUserManager
+from account.managers import CustomUserManager, UserTypes
 
 AVATAR_WIDTH = 256
 AVATAR_HEIGHT = 256
@@ -13,10 +13,7 @@ AVATAR_THUMBNAIL_HEIGHT = 64
 
 
 class User(AbstractUser):
-    class Types(models.TextChoices):
-        TEACHER = 'teacher', _('teacher')
-        STUDENT = 'student', _('student')
-        ADMIN = 'admin', _('admin')
+    Types = UserTypes
 
     email = models.EmailField(
         unique=True,
@@ -53,7 +50,7 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['name']
 
     def __str__(self):
         return f'{self.name} ({self.email})'
