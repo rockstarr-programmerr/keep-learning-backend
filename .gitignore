@@ -1,0 +1,11 @@
+.venv
+.env
+__pycache__
+*.sqlite3
+staticfiles/
+media/
+.coverage
+htmlcov/
+temp/
+*.pid
+*.log
