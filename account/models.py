@@ -13,6 +13,11 @@ AVATAR_THUMBNAIL_HEIGHT = 64
 
 
 class User(AbstractUser):
+    class Types(models.TextChoices):
+        TEACHER = 'teacher', _('teacher')
+        STUDENT = 'student', _('student')
+        ADMIN = 'admin', _('admin')
+
     email = models.EmailField(
         unique=True,
         error_messages={
@@ -25,6 +30,10 @@ class User(AbstractUser):
     phone_number = models.CharField(
         max_length=20,
         blank=True,
+    )
+    user_type = models.CharField(
+        max_length=20,
+        choices=Types.choices,
     )
     avatar = models.ImageField(
         upload_to='users/avatar/%Y/%m',
