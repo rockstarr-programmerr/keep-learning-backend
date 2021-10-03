@@ -46,3 +46,9 @@ class ClassroomTeacherSerializer(serializers.HyperlinkedModelSerializer):
         teacher = self.context['request'].user
         kwargs['teacher'] = teacher
         return super().save(**kwargs)
+
+
+class AddStudentSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    name = serializers.CharField(required=False, max_length=150)
+    phone_number = serializers.CharField(required=False, max_length=20)

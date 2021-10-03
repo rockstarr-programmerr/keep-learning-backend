@@ -33,7 +33,7 @@ python manage.py runserver
 
 ### Debug
 #### For Visual studio code
-Just press F5 (Config is inside `.vscode/`)
+Just press F5 (Config is inside `keep-learning.code-workspace`)
 
 #### For other editors
 Please contribute if you know how.

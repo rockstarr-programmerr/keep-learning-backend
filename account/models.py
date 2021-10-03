@@ -4,7 +4,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
 
-from account.managers import CustomUserManager, UserTypes
+from account.managers import (CustomUserManager, StudentManager,
+                              TeacherManager, UserTypes)
 
 AVATAR_WIDTH = 256
 AVATAR_HEIGHT = 256
@@ -47,10 +48,13 @@ class User(AbstractUser):
         blank=True,
     )
 
+    # NOTE: Order of managers is important, first manager is considered "default" by Django.
     objects = CustomUserManager()
+    teachers = TeacherManager()
+    students = StudentManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return f'{self.name} ({self.email})'
