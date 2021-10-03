@@ -8,7 +8,8 @@ from classroom.filters import ClassroomTeacherFilter
 from classroom.models import Classroom
 from classroom.permissions import IsClassroomTeacher
 from classroom.serializers import (AddStudentSerializer,
-                                   ClassroomTeacherSerializer)
+                                   ClassroomTeacherSerializer,
+                                   RemoveStudentSerializer)
 
 
 class ClassroomTeacherViewSet(ModelViewSet):
@@ -43,3 +44,19 @@ class ClassroomTeacherViewSet(ModelViewSet):
                 "Tell them to login with it."
             )
         })
+
+    @action(
+        methods=['POST'], detail=True, url_path='remove-students',
+        serializer_class=RemoveStudentSerializer,
+    )
+    def remove_students(self, request, pk):
+        """Remove students from this classroom.
+
+        The student account will **NOT** be deleted, it will just be removed from this classroom.
+        """
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        emails = [data['email'] for data in serializer.validated_data]
+        classroom = self.get_object()
+        business.remove_students_from_classroom(classroom, emails)
+        return Response()

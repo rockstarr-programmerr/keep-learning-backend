@@ -37,3 +37,8 @@ def add_students_to_classroom(classroom, students_data):
     send_temp_password_for_new_students_task.delay(
         student_emails, temp_passwords, classroom.teacher.name
     )
+
+
+def remove_students_from_classroom(classroom, student_emails):
+    students_to_remove = classroom.students.filter(email__in=student_emails)
+    classroom.students.remove(*students_to_remove)
