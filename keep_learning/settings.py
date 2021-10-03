@@ -54,6 +54,8 @@ env = environ.Env(
     EMAIL_HOST_USER=(str, ''),
     EMAIL_HOST_PASSWORD=(str, ''),
     DEFAULT_FROM_EMAIL=(str, ''),
+
+    CELERY_BROKER_URL=(str, 'amqp://kl_user:kl_password@localhost:5672/kl_vhost'),
 )
 # reading .env file
 env_file = str(BASE_DIR / '.env')
@@ -252,6 +254,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
 EMAIL_BACKEND = env('EMAIL_BACKEND')
 EMAIL_FILE_PATH = env('EMAIL_FILE_PATH')
