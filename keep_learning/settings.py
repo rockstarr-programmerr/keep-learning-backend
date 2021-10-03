@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'crispy_forms',
     'account.apps.AccountConfig',
+    'classroom.apps.ClassroomConfig',
 ]
 
 MIDDLEWARE = [
