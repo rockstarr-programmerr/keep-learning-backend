@@ -11,6 +11,9 @@ class RootAPIView(APIView):
         if request.user.is_authenticated:
             data = {
                 'account': request.build_absolute_uri('/account/'),
+                'teacher': {
+                    'classroom': request.build_absolute_uri('/classroom/teacher/'),
+                }
             }
         else:
             data = {

@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class Classroom(models.Model):
-    name = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     teacher = models.ForeignKey(
         User,
@@ -23,3 +23,4 @@ class Classroom(models.Model):
 
     class Meta:
         ordering = ['-create_datetime']
+        unique_together = ['name', 'teacher']

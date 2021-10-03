@@ -69,3 +69,9 @@ class User(AbstractUser):
             with Image.open(image.path) as f:
                 f.thumbnail((width, height))
                 f.save(image.path)
+
+    def is_teacher(self):
+        return self.user_type == self.Types.TEACHER
+
+    def is_student(self):
+        return self.user_type == self.Types.STUDENT
