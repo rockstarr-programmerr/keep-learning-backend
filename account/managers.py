@@ -8,9 +8,9 @@ def get_first_part_of_email(email):
 
 
 class UserTypes(models.TextChoices):
-    TEACHER = 'teacher', _('teacher')
-    STUDENT = 'student', _('student')
-    ADMIN = 'admin', _('admin')
+    TEACHER = 'teacher', _('Teacher')
+    STUDENT = 'student', _('Student')
+    ADMIN = 'admin', _('Admin')
 
 
 class CustomUserManager(UserManager):

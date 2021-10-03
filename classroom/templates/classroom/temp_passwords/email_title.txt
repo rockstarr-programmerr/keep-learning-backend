@@ -1,0 +1,8 @@
+{% load i18n %}
+{% autoescape off %}
+
+{% blocktranslate %}
+Teacher {{ teacher_name }} have created an account for you.
+{% endblocktranslate %}
+
+{% endautoescape %}

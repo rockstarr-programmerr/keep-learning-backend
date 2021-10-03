@@ -8,7 +8,7 @@ class IsTeacher(IsAuthenticated):
     def has_permission(self, request, view):
         return (
             super().has_permission(request, view) and
-            request.user.is_teacher
+            request.user.is_teacher()
         )
 
 
@@ -28,7 +28,7 @@ class IsStudent(IsAuthenticated):
     def has_permission(self, request, view):
         return (
             super().has_permission(request, view) and
-            request.user.is_student
+            request.user.is_student()
         )
 
 

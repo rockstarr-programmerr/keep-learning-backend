@@ -56,6 +56,7 @@ env = environ.Env(
     DEFAULT_FROM_EMAIL=(str, ''),
 
     CELERY_BROKER_URL=(str, 'amqp://kl_user:kl_password@localhost:5672/kl_vhost'),
+    WEB_LOGIN_URL=(str, 'http://localhost:8080/login/')
 )
 # reading .env file
 env_file = str(BASE_DIR / '.env')
@@ -278,3 +279,5 @@ IS_TESTING = 'test' in sys.argv
 if IS_TESTING:
     if 'DEFAULT_THROTTLE_RATES' in REST_FRAMEWORK:
         del REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']
+
+WEB_LOGIN_URL = env('WEB_LOGIN_URL')

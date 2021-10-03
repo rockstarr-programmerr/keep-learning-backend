@@ -1,0 +1,23 @@
+{% load i18n %}
+{% autoescape off %}
+
+{% translate 'Hi there!' %}
+
+{% blocktranslate %}
+You're receiving this email because teacher {{ teacher_name }} have created an account for you at {{ site_name }}.
+{% endblocktranslate %}
+
+{% translate 'Your account information:' %}
+{% translate 'Email' %}: {{ student_email }}
+{% translate 'Temporary password' %}: {{ temp_password }}
+
+{% translate "Please click this link and login with the above information:" %}
+{{ url }}
+
+After login, we highly recommend you to change your password.
+
+{% blocktranslate %}
+Welcome to teacher {{ teacher_name }}'s class :)
+{% endblocktranslate %}
+
+{% endautoescape %}

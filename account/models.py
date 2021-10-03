@@ -57,7 +57,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return f'{self.name} ({self.email})'
+        return f'{self.name} ({self.email}) - {self.get_user_type_display()}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
