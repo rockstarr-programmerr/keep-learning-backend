@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from classroom import views
+from classroom.views import teacher as teacher_views
 
 
 # NOTE: DRF has bug involve app's namespace and viewset's extra_actions,
@@ -10,6 +10,6 @@ from classroom import views
 urlpatterns = []
 
 router = DefaultRouter()
-router.register('classrooms', views.ClassroomTeacherViewSet, basename='classroom-teacher')
+router.register('classrooms', teacher_views.ClassroomTeacherViewSet, basename='classroom-teacher')
 
 urlpatterns.extend(router.urls)
