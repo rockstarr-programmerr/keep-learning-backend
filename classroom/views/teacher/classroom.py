@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from classroom import business
-from classroom.filters import ClassroomTeacherFilter
+from classroom.filters.teacher import ClassroomTeacherFilter
 from classroom.models import Classroom
 from classroom.permissions import IsClassroomTeacher
-from classroom.serializers import (AddStudentSerializer,
-                                   ClassroomTeacherSerializer,
-                                   RemoveStudentSerializer)
+from classroom.serializers.teacher import (AddStudentSerializer,
+                                           ClassroomTeacherSerializer,
+                                           RemoveStudentSerializer)
 
 
 class ClassroomTeacherViewSet(ModelViewSet):

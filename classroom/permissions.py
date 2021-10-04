@@ -22,6 +22,16 @@ class IsClassroomTeacher(IsTeacher):
         )
 
 
+class IsTeacherOwnsExercise(IsTeacher):
+    message = _('Only teacher who owns this exercise has permission for this.')
+
+    def has_object_permission(self, request, view, exercise):
+        return (
+            super().has_object_permission(request, view, exercise) and
+            request.user == exercise.creator
+        )
+
+
 class IsStudent(IsAuthenticated):
     message = _('Only student has permission for this.')
 

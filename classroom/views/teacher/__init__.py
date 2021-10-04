@@ -1,1 +1,2 @@
 from .classroom import ClassroomTeacherViewSet
+from .exercise import ReadingExerciseTeacherViewSet

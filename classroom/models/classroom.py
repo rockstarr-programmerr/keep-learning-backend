@@ -24,3 +24,6 @@ class Classroom(models.Model):
     class Meta:
         ordering = ['-create_datetime']
         unique_together = ['name', 'teacher']
+
+    def __str__(self):
+        return f'{self.name} - (Teacher: {self.teacher.email})'
