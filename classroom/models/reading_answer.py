@@ -9,3 +9,6 @@ class ReadingAnswer(Answer):
 
     class Meta:
         ordering = ['question', 'letter', 'pk']
+
+    def __str__(self):
+        return f'{self.letter}. {self.content[:50]}'

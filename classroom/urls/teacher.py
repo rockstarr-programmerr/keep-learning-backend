@@ -12,5 +12,6 @@ urlpatterns = []
 router = DefaultRouter()
 router.register('classrooms', teacher_views.ClassroomTeacherViewSet, basename='classroom-teacher')
 router.register('reading-exercises', teacher_views.ReadingExerciseTeacherViewSet, basename='reading-exercise-teacher')
+router.register('reading-questions', teacher_views.ReadingQuestionTeacherViewSet, basename='reading-question-teacher')
 
 urlpatterns.extend(router.urls)
