@@ -3,6 +3,7 @@ import secrets
 from django.contrib.auth import get_user_model
 
 from classroom.tasks import send_temp_password_for_new_students_task
+from classroom.models import ReadingExercise
 
 User = get_user_model()
 
@@ -42,3 +43,12 @@ def add_students_to_classroom(classroom, students_data):
 def remove_students_from_classroom(classroom, student_emails):
     students_to_remove = classroom.students.filter(email__in=student_emails)
     classroom.students.remove(*students_to_remove)
+
+
+def add_reading_exercises_to_classroom(classroom, exercise_pks, user):
+    exercises = user.reading_exercises_created.filter(pk__in=exercise_pks)
+    classroom.reading_exercises.add(*exercises)
+
+
+def remove_reading_exercises_to_classroom(classroom, exercise_pks):
+    classroom.reading_exercises.remove(*exercise_pks)

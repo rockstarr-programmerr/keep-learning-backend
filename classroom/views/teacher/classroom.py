@@ -3,12 +3,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from classroom import business
+from classroom.business.teacher import classroom as business
 from classroom.filters.teacher import ClassroomTeacherFilter
 from classroom.models import Classroom
 from classroom.permissions import IsClassroomTeacher
-from classroom.serializers.teacher import (AddStudentSerializer,
+from classroom.serializers.teacher import (AddReadingExerciseSerializer,
+                                           AddStudentSerializer,
                                            ClassroomTeacherSerializer,
+                                           RemoveReadingExerciseSerializer,
                                            RemoveStudentSerializer)
 
 
@@ -59,4 +61,28 @@ class ClassroomTeacherViewSet(ModelViewSet):
         emails = [data['email'] for data in serializer.validated_data]
         classroom = self.get_object()
         business.remove_students_from_classroom(classroom, emails)
+        return Response()
+
+    @action(
+        methods=['POST'], detail=True, url_path='add-reading-exercises',
+        serializer_class=AddReadingExerciseSerializer
+    )
+    def add_reading_exercises(self, request, pk):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        exercise_pks = [data['pk'] for data in serializer.validated_data]
+        classroom = self.get_object()
+        business.add_reading_exercises_to_classroom(classroom, exercise_pks, request.user)
+        return Response()
+
+    @action(
+        methods=['POST'], detail=True, url_path='remove-reading-exercises',
+        serializer_class=RemoveReadingExerciseSerializer,
+    )
+    def remove_reading_exercises(self, request, pk):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        exercise_pks = [data['pk'] for data in serializer.validated_data]
+        classroom = self.get_object()
+        business.remove_reading_exercises_to_classroom(classroom, exercise_pks)
         return Response()

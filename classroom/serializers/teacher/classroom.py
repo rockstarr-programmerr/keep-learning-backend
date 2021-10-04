@@ -14,10 +14,11 @@ class ClassroomTeacherSerializer(ValidateUniqueTogetherMixin, serializers.Hyperl
         model = Classroom
         fields = [
             'pk', 'url', 'name', 'description', 'create_datetime',
-            'teacher', 'students',
+            'teacher', 'students', 'reading_exercises',
         ]
         extra_kwargs = {
             'url': {'view_name': 'classroom-teacher-detail'},
+            'reading_exercises': {'view_name': 'reading-exercise-teacher-detail'},
             'create_datetime': {'read_only': True},
         }
 
@@ -41,3 +42,11 @@ class AddStudentSerializer(serializers.Serializer):
 
 class RemoveStudentSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class AddReadingExerciseSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
+
+
+class RemoveReadingExerciseSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()
