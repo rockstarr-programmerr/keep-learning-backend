@@ -6,7 +6,7 @@ from classroom.models import Classroom
 from classroom.utils.serializer import ValidateUniqueTogetherMixin
 
 
-class ClassroomTeacherSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedModelSerializer):
+class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedModelSerializer):
     teacher = UserSerializer(read_only=True)
     students = UserSerializer(many=True, read_only=True)
 
@@ -17,8 +17,8 @@ class ClassroomTeacherSerializer(ValidateUniqueTogetherMixin, serializers.Hyperl
             'teacher', 'students', 'reading_exercises',
         ]
         extra_kwargs = {
-            'url': {'view_name': 'classroom-teacher-detail'},
-            'reading_exercises': {'view_name': 'reading-exercise-teacher-detail'},
+            'url': {'view_name': 'classroom-detail'},
+            'reading_exercises': {'view_name': 'reading-exercise-detail'},
             'create_datetime': {'read_only': True},
         }
 

@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from classroom.models import Classroom
 
 
-class ClassroomTeacherFilter(filters.FilterSet):
+class ClassroomFilter(filters.FilterSet):
     class Meta:
         model = Classroom
         fields = {

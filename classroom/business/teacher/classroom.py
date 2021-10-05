@@ -3,7 +3,6 @@ import secrets
 from django.contrib.auth import get_user_model
 
 from classroom.tasks import send_temp_password_for_new_students_task
-from classroom.models import ReadingExercise
 
 User = get_user_model()
 

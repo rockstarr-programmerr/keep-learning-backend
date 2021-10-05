@@ -3,21 +3,20 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from classroom.business.teacher import classroom as business
-from classroom.filters.teacher import ClassroomTeacherFilter
+from classroom.business.teacher import classroom as teacher_business
+from classroom.filters import ClassroomFilter
 from classroom.models import Classroom
 from classroom.permissions import IsClassroomTeacher
-from classroom.serializers.teacher import (AddReadingExerciseSerializer,
-                                           AddStudentSerializer,
-                                           ClassroomTeacherSerializer,
-                                           RemoveReadingExerciseSerializer,
-                                           RemoveStudentSerializer)
+from classroom.serializers import (AddReadingExerciseSerializer,
+                                   AddStudentSerializer, ClassroomSerializer,
+                                   RemoveReadingExerciseSerializer,
+                                   RemoveStudentSerializer)
 
 
-class ClassroomTeacherViewSet(ModelViewSet):
+class ClassroomViewSet(ModelViewSet):
     queryset = Classroom.objects.all()
-    serializer_class = ClassroomTeacherSerializer
-    filterset_class = ClassroomTeacherFilter
+    serializer_class = ClassroomSerializer
+    filterset_class = ClassroomFilter
     permission_classes = [IsClassroomTeacher]
     ordering_fields = ['create_datetime', 'name']
     ordering = ['-create_datetime']
@@ -39,7 +38,7 @@ class ClassroomTeacherViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         classroom = self.get_object()
-        business.add_students_to_classroom(classroom, serializer.validated_data)
+        teacher_business.add_students_to_classroom(classroom, serializer.validated_data)
         return Response({
             'message': _(
                 "Your students will receive an email with a temporary password. "
@@ -60,7 +59,7 @@ class ClassroomTeacherViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         emails = [data['email'] for data in serializer.validated_data]
         classroom = self.get_object()
-        business.remove_students_from_classroom(classroom, emails)
+        teacher_business.remove_students_from_classroom(classroom, emails)
         return Response()
 
     @action(
@@ -72,7 +71,7 @@ class ClassroomTeacherViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         exercise_pks = [data['pk'] for data in serializer.validated_data]
         classroom = self.get_object()
-        business.add_reading_exercises_to_classroom(classroom, exercise_pks, request.user)
+        teacher_business.add_reading_exercises_to_classroom(classroom, exercise_pks, request.user)
         return Response()
 
     @action(
@@ -84,5 +83,5 @@ class ClassroomTeacherViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         exercise_pks = [data['pk'] for data in serializer.validated_data]
         classroom = self.get_object()
-        business.remove_reading_exercises_to_classroom(classroom, exercise_pks)
+        teacher_business.remove_reading_exercises_to_classroom(classroom, exercise_pks)
         return Response()

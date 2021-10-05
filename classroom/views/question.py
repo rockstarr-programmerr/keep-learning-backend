@@ -1,15 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 
-from classroom.filters.teacher import ReadingQuestionTeacherFilter
+from classroom.filters import ReadingQuestionFilter
 from classroom.models import ReadingQuestion
 from classroom.permissions import IsTeacherOwnsQuestion
-from classroom.serializers.teacher import ReadingQuestionSerializer
+from classroom.serializers import ReadingQuestionSerializer
 
 
-class ReadingQuestionTeacherViewSet(ModelViewSet):
+class ReadingQuestionViewSet(ModelViewSet):
     queryset = ReadingQuestion.objects.all()
     serializer_class = ReadingQuestionSerializer
-    filterset_class = ReadingQuestionTeacherFilter
+    filterset_class = ReadingQuestionFilter
     permission_classes = [IsTeacherOwnsQuestion]
     ordering_fields = ['from_number']
     ordering = ['from_number']

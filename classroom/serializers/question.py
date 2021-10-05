@@ -12,8 +12,8 @@ class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
             'from_number', 'to_number', 'question_type', 'correct_answer',
         ]
         extra_kwargs = {
-            'url': {'view_name': 'reading-question-teacher-detail'},
-            'exercise': {'view_name': 'reading-exercise-teacher-detail'},
+            'url': {'view_name': 'reading-question-detail'},
+            'exercise': {'view_name': 'reading-exercise-detail'},
             'from_number': {'min_value': 1},
             'to_number': {'min_value': 1},
         }

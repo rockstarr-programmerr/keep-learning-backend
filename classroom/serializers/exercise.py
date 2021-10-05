@@ -10,7 +10,7 @@ class ReadingExerciseSerializer(ValidateUniqueTogetherMixin, serializers.Hyperli
         model = ReadingExercise
         fields = ['pk', 'url', 'identifier', 'content']
         extra_kwargs = {
-            'url': {'view_name': 'reading-exercise-teacher-detail'},
+            'url': {'view_name': 'reading-exercise-detail'},
         }
 
     def validate_identifier(self, identifier):

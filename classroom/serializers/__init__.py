@@ -1,5 +1,5 @@
 from .classroom import (AddReadingExerciseSerializer, AddStudentSerializer,
-                        ClassroomTeacherSerializer,
+                        ClassroomSerializer,
                         RemoveReadingExerciseSerializer,
                         RemoveStudentSerializer)
 from .exercise import ReadingExerciseSerializer

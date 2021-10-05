@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('account/', include('account.urls')),
-    path('teacher/class/', include('classroom.urls.teacher')),
+    path('classroom/', include('classroom.urls')),
 ]
 
 if settings.DEBUG:
