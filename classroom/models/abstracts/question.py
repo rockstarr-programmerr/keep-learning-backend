@@ -19,13 +19,9 @@ class Question(models.Model):
     number = models.PositiveSmallIntegerField()
     question_type = models.CharField(max_length=30, choices=Types.choices)
     choices = models.CharField(max_length=255, blank=True)
-    correct_answer = models.CharField(max_length=255)
 
     class Meta:
         abstract = True
-
-    def __str__(self):
-        return f'{self.number} | {self.get_question_type_display()} | {self.correct_answer[:50]}'
 
     def save(self, *args, **kwargs):
         self.set_default_choices()

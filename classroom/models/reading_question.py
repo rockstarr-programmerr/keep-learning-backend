@@ -12,6 +12,9 @@ class ReadingQuestion(Question):
     class Meta:
         ordering = ['exercise']
 
+    def __str__(self):
+        return f'{self.exercise.identifier} | {self.get_question_type_display()}'
+
     def create_answers(self, answers):
         contents = answers.split(self._DELEMITER)
         answers_objs = [
