@@ -21,6 +21,7 @@ class ReadingQuestionFilter(filters.FilterSet):
             qs = parent.filter(exercise__creator=user)
         else:
             qs = parent.filter(exercise__classrooms__in=user.classrooms_studying.all())
-        qs = qs.select_related('exercise__creator')
+        qs = qs.select_related('exercise__creator')\
+               .prefetch_related('answers')
 
         return qs
