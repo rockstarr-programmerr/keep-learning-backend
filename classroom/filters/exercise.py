@@ -15,8 +15,12 @@ class ReadingExerciseFilter(filters.FilterSet):
     @property
     def qs(self):
         parent = super().qs
-        teacher = self.request.user
-        exercises_pks = teacher.reading_exercises_created.all().values_list('pk', flat=True)
-        qs = parent.filter(pk__in=list(exercises_pks))\
-                   .select_related('creator')
+        user = self.request.user
+
+        if user.is_teacher():
+            qs = parent.filter(creator=user)
+        else:
+            qs = parent.filter(classrooms__in=user.classrooms_studying.all())  # TODO: test
+        qs = qs.select_related('creator')
+
         return qs

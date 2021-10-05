@@ -1,62 +1,15 @@
 from django.utils.translation import gettext_lazy as _
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 
 
-class IsTeacher(IsAuthenticated):
-    message = _('Only teacher has permission for this.')
-
-    def has_permission(self, request, view):
-        return (
-            super().has_permission(request, view) and
-            request.user.is_teacher()
-        )
-
-
-class IsClassroomTeacher(IsTeacher):
-    message = _('Only teacher of this class room has permission for this.')
-
-    def has_object_permission(self, request, view, classroom):
-        return (
-            super().has_object_permission(request, view, classroom) and
-            request.user == classroom.teacher
-        )
-
-
-class IsTeacherOwnsExercise(IsTeacher):
-    message = _('Only teacher who owns this exercise has permission for this.')
-
-    def has_object_permission(self, request, view, exercise):
-        return (
-            super().has_object_permission(request, view, exercise) and
-            request.user == exercise.creator
-        )
-
-
-class IsTeacherOwnsQuestion(IsTeacher):
-    message = _('Only teacher who owns this question has permission for this.')
-
-    def has_object_permission(self, request, view, question):
-        return (
-            super().has_object_permission(request, view, question) and
-            request.user == question.exercise.creator
-        )
-
-
-class IsStudent(IsAuthenticated):
-    message = _('Only student has permission for this.')
+class IsTeacherOrReadOnly(IsAuthenticated):
+    message = _('Only teacher can edit this resource, student can only read.')
 
     def has_permission(self, request, view):
+        is_authenticated = super().has_permission(request, view)
+        is_teacher = request.user.is_teacher()
         return (
-            super().has_permission(request, view) and
-            request.user.is_student()
-        )
-
-
-class IsClassroomStudent(IsStudent):
-    message = _('Only student of this class room has permission for this.')
-
-    def has_object_permission(self, request, view, classroom):
-        return (
-            super().has_object_permission(request, view, classroom) and
-            request.user in classroom.students.all()
+            is_authenticated and (
+                request.method in SAFE_METHODS or is_teacher
+            )
         )

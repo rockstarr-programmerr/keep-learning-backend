@@ -15,9 +15,24 @@ class ClassroomFilter(filters.FilterSet):
     @property
     def qs(self):
         parent = super().qs
-        teacher = self.request.user
-        classrooms_pks = teacher.classrooms_teaching.all().values_list('pk', flat=True)
-        qs = parent.filter(pk__in=list(classrooms_pks))\
+
+        if self.request.user.is_teacher():
+            classrooms = self.teacher_classrooms
+        else:
+            classrooms = self.student_classrooms
+        classrooms_pks = list(classrooms.values_list('pk', flat=True))
+
+        qs = parent.filter(pk__in=classrooms_pks)\
                    .select_related('teacher')\
                    .prefetch_related('students')
         return qs
+
+    @property
+    def teacher_classrooms(self):
+        teacher = self.request.user
+        return teacher.classrooms_teaching.all()
+
+    @property
+    def student_classrooms(self):
+        student = self.request.user
+        return student.classrooms_studying.all()

@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from classroom.business.teacher import classroom as teacher_business
 from classroom.filters import ClassroomFilter
 from classroom.models import Classroom
-from classroom.permissions import IsClassroomTeacher
+from classroom.permissions import IsTeacherOrReadOnly
 from classroom.serializers import (AddReadingExerciseSerializer,
                                    AddStudentSerializer, ClassroomSerializer,
                                    RemoveReadingExerciseSerializer,
@@ -17,7 +17,7 @@ class ClassroomViewSet(ModelViewSet):
     queryset = Classroom.objects.all()
     serializer_class = ClassroomSerializer
     filterset_class = ClassroomFilter
-    permission_classes = [IsClassroomTeacher]
+    permission_classes = [IsTeacherOrReadOnly]
     ordering_fields = ['create_datetime', 'name']
     ordering = ['-create_datetime']
 
@@ -64,7 +64,7 @@ class ClassroomViewSet(ModelViewSet):
 
     @action(
         methods=['POST'], detail=True, url_path='add-reading-exercises',
-        serializer_class=AddReadingExerciseSerializer
+        serializer_class=AddReadingExerciseSerializer,
     )
     def add_reading_exercises(self, request, pk):
         serializer = self.get_serializer(data=request.data, many=True)
