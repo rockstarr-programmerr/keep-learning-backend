@@ -11,5 +11,5 @@ class ReadingQuestionViewSet(ModelViewSet):
     serializer_class = ReadingQuestionSerializer
     filterset_class = ReadingQuestionFilter
     permission_classes = [IsTeacherOrReadOnly]
-    ordering_fields = ['from_number']
-    ordering = ['from_number']
+    ordering_fields = ['number']
+    ordering = ['number']

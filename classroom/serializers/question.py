@@ -5,55 +5,68 @@ from classroom.models import ReadingQuestion
 
 
 class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
+    answers = serializers.CharField(source='get_answers_content')
+
     class Meta:
         model = ReadingQuestion
         fields = [
             'pk', 'url', 'exercise', 'passage',
-            'from_number', 'to_number', 'question_type',
-            'answers', 'correct_answer',
+            'number', 'question_type',
+            'choices', 'answers',
         ]
         extra_kwargs = {
             'url': {'view_name': 'reading-question-detail'},
             'exercise': {'view_name': 'reading-exercise-detail'},
             'passage': {'min_value': 1},
-            'from_number': {'min_value': 1},
-            'to_number': {'min_value': 1},
+            'number': {'min_value': 1},
         }
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        self._validate_from_to_number(attrs)
         self._validate_question_not_exist(attrs)
+        self._handle_get_answers_content(attrs)
         return attrs
 
-    def _validate_from_to_number(self, attrs):
-        from_number = attrs['from_number']
-        to_number = attrs['to_number']
-        if to_number is not None and not to_number > from_number:
-            raise serializers.ValidationError(
-                _('"To" must be greater than "From".')
-            )
-
     def _validate_question_not_exist(self, attrs):
-        from_number = attrs['from_number']
-        exercise = attrs['exercise']
+        number = attrs.get('number')
+        if number is None:
+            return
+
+        exercise = attrs.get('exercise') or self.instance.exercise  # If `attrs` don't have 'exercise',
+                                                                    # there should be `self.instance`
         question_range = exercise.get_question_range()
 
         if self.instance:
-            if self.instance.to_number is not None:
-                instance_range = range(self.instance.from_number, self.instance.to_number + 1)
-            else:
-                instance_range = [self.instance.from_number]
-            for number in instance_range:
-                try:
-                    index = question_range.index(number)
-                    question_range.pop(index)
-                except ValueError:
-                    pass
+            try:
+                index = question_range.index(self.instance.number)
+                question_range.pop(index)
+            except ValueError:
+                pass
 
-        if from_number in question_range:
+        if number in question_range:
             raise serializers.ValidationError(
                 _('This question number already exists.')
             )
 
-    # TODO: validation regarding `question_type` and `correct_answer`
+    def _handle_get_answers_content(self, attrs):
+        if 'get_answers_content' in attrs:
+            attrs['answers'] = attrs.pop('get_answers_content')
+
+    def create(self, validated_data):
+        has_answers = 'answers' in validated_data
+        if has_answers:
+            answers = validated_data.pop('answers')
+
+        question = super().create(validated_data)
+
+        if has_answers:
+            question.create_answers(answers)
+
+        return question
+
+    def update(self, question, validated_data):
+        if 'answers' in validated_data:
+            answers = validated_data.pop('answers')
+            question.replace_answers(answers)
+
+        return super().update(question, validated_data)

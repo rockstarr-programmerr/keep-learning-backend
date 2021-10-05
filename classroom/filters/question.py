@@ -8,6 +8,8 @@ class ReadingQuestionFilter(filters.FilterSet):
         model = ReadingQuestion
         fields = {
             'exercise': ['exact'],
+            'passage': ['exact'],
+            'number': ['exact', 'gte', 'lte'],
         }
 
     @property
