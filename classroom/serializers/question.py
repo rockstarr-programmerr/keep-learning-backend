@@ -8,12 +8,13 @@ class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ReadingQuestion
         fields = [
-            'pk', 'url', 'exercise',
+            'pk', 'url', 'exercise', 'passage',
             'from_number', 'to_number', 'question_type', 'correct_answer',
         ]
         extra_kwargs = {
             'url': {'view_name': 'reading-question-detail'},
             'exercise': {'view_name': 'reading-exercise-detail'},
+            'passage': {'min_value': 1},
             'from_number': {'min_value': 1},
             'to_number': {'min_value': 1},
         }

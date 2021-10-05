@@ -18,7 +18,7 @@ class ReadingQuestionFilter(filters.FilterSet):
         if user.is_teacher():
             qs = parent.filter(exercise__creator=user)
         else:
-            qs = parent.filter(exercise__classrooms__in=user.classrooms_studying.all())  # TODO: test
+            qs = parent.filter(exercise__classrooms__in=user.classrooms_studying.all())
         qs = qs.select_related('exercise__creator')
 
         return qs

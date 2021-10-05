@@ -12,7 +12,7 @@ class RootAPIView(APIView):
             data = {
                 'account': request.build_absolute_uri('/account/'),
                 'teacher': {
-                    'class': request.build_absolute_uri('/classroom/'),
+                    'classroom': request.build_absolute_uri('/classroom/'),
                 }
             }
         else:
