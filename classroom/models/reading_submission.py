@@ -13,3 +13,6 @@ class ReadingSubmission(models.Model):
 
     class Meta:
         ordering = ['exercise', 'submitter', 'submit_datetime']
+
+    def get_answers(self):
+        return self.answers.all().values('question_number', 'content')

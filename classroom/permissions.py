@@ -13,3 +13,13 @@ class IsTeacherOrReadOnly(IsAuthenticated):
                 request.method in SAFE_METHODS or is_teacher
             )
         )
+
+
+class IsStudent(IsAuthenticated):
+    message = _('Only student has permission for this.')
+
+    def has_permission(self, request, view):
+        return (
+            super().has_permission(request, view) and
+            request.user.is_student()
+        )
