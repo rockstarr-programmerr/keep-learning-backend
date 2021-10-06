@@ -22,7 +22,7 @@ class ReadingSubmissionFilter(filters.FilterSet):
             qs = parent.filter(exercise__classrooms__in=classrooms)
         else:
             qs = parent.filter(submitter=user)
-        qs = qs.select_related('exercise__creator')\
+        qs = qs.select_related('exercise__creator', 'submitter')\
                .prefetch_related('answers')
 
         return qs
