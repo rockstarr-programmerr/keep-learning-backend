@@ -66,7 +66,7 @@ class Question(models.Model):
             answer = f' {answer} '  # Add 2 spaces to both side to help with regex matching
 
             for correct_answer in possible_answers:
-                regex = correct_answer
+                regex = correct_answer.content
                 if regex.startswith('('):
                     regex = r'(?:' + regex[1:]
 

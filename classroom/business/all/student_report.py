@@ -1,3 +1,6 @@
+from .band_score import BAND_SCORE_MAPPER
+
+
 class ReadingReportMaker:
     def __init__(self, classroom, student):
         self.classroom = classroom
@@ -19,11 +22,8 @@ class ReadingReportMaker:
                 report['passage_1'] = self.calculate_score(questions, answers, 1)
                 report['passage_2'] = self.calculate_score(questions, answers, 2)
                 report['passage_3'] = self.calculate_score(questions, answers, 3)
-                report['band_score'] = (
-                    self.calculate_band(report['passage_1']) +
-                    self.calculate_band(report['passage_2']) +
-                    self.calculate_band(report['passage_3'])
-                )
+                report['total'] = report['passage_1'] + report['passage_2'] + report['passage_3']
+                report['band_score'] = self.calculate_band(report['total'])
 
             reports.append(report)
 
@@ -56,15 +56,16 @@ class ReadingReportMaker:
         score = 0
         for question in questions:
             answer = self.get_answer(answers, question)
-            is_correct = question.check_answer(answer.content)
-            if is_correct:
-                score += 1
+            if answer:
+                is_correct = question.check_answer(answer.content)
+                if is_correct:
+                    score += 1
 
         return score
 
     @staticmethod
     def calculate_band(score):
-        pass
+        return BAND_SCORE_MAPPER[score]
 
     @staticmethod
     def get_answer(answers, question):

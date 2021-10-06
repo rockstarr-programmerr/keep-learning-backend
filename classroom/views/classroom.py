@@ -103,4 +103,5 @@ class ClassroomViewSet(ModelViewSet):
         student = get_object_or_404(User.students.all(), pk=serializer.validated_data['student'])
         report_maker = ReadingReportMaker(classroom, student)
         report = report_maker.make()
-        return Response(report)
+        serializer = self.get_serializer(instance=report, many=True)
+        return Response(serializer.data)

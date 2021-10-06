@@ -72,3 +72,10 @@ class RemoveReadingExerciseSerializer(serializers.Serializer):
 
 class StudentReadingReportSerializer(serializers.Serializer):
     student = serializers.IntegerField(write_only=True)
+    exercise = serializers.CharField(read_only=True)
+    passage_1 = serializers.IntegerField(read_only=True)
+    passage_2 = serializers.IntegerField(read_only=True)
+    passage_3 = serializers.IntegerField(read_only=True)
+    total = serializers.IntegerField(read_only=True)
+    band_score = serializers.FloatField(read_only=True)
+    submitted = serializers.BooleanField(read_only=True)
