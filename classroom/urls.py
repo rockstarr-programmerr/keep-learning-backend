@@ -13,5 +13,6 @@ router = DefaultRouter()
 router.register('classrooms', views.ClassroomViewSet, basename='classroom')
 router.register('reading-exercises', views.ReadingExerciseViewSet, basename='reading-exercise')
 router.register('reading-questions', views.ReadingQuestionViewSet, basename='reading-question')
+router.register('reading-submissions', views.ReadingSubmissionViewSet, basename='reading-submission')
 
 urlpatterns.extend(router.urls)
