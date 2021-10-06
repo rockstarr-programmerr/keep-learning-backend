@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -39,17 +41,45 @@ class Question(models.Model):
         elif not self.is_multiple_choice():
             self.choices = ''
 
+    def is_multiple_choice(self):
+        return self.question_type == self.Types.MULTIPLE_CHOICE
+
     def is_true_false(self):
         return self.question_type == self.Types.TRUE_FALSE
 
     def is_yes_no(self):
         return self.question_type == self.Types.YES_NO
 
-    def is_multiple_choice(self):
-        return self.question_type == self.Types.MULTIPLE_CHOICE
+    def is_fill_blank(self):
+        return self.question_type == self.Types.FILL_BLANK
 
     def get_answers_content(self):
         answers = []
         for answer in self.answers.all():
             answers.append(answer.content)
         return answers
+
+    def check_answer(self, answer):
+        possible_answers = self.answers.all()
+
+        if self.is_fill_blank():
+            answer = f' {answer} '  # Add 2 spaces to both side to help with regex matching
+
+            for correct_answer in possible_answers:
+                regex = correct_answer
+                if regex.startswith('('):
+                    regex = r'(?:' + regex[1:]
+
+                regex = regex.replace(' (', r'(?:\s?')\
+                             .replace(')', r')?')
+                regex = r'\s*' + regex + r'\s*'
+
+                match = re.match(regex, answer)
+                if match:
+                    match_str = match.group(0)
+                    if match_str == answer:
+                        return True
+
+            return False
+        else:
+            return answer in possible_answers

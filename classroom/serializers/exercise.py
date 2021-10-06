@@ -29,6 +29,10 @@ class ReadingExerciseSerializer(ValidateUniqueTogetherMixin, serializers.Hyperli
 class _SubmitAnswerListSerializer(serializers.ListSerializer):
     def save(self, exercise=None):
         student = self.context['request'].user
+        if exercise.submissions.filter(submitter=student).exists():
+            raise serializers.ValidationError(
+                _('You already submitted answers for this exercise.')
+            )
         submission = self._create_submission(student, exercise)
         self._create_submission_answers(submission)
 

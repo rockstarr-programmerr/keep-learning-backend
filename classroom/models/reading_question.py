@@ -26,3 +26,12 @@ class ReadingQuestion(Question):
     def replace_answers(self, answers):
         self.answers.all().delete()
         self.create_answers(answers)
+
+    def is_passage_1(self):
+        return self.passage == 1
+
+    def is_passage_2(self):
+        return self.passage == 2
+
+    def is_passage_3(self):
+        return self.passage == 3
