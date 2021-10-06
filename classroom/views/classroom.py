@@ -1,16 +1,22 @@
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from classroom.business.teacher import classroom as teacher_business
+from classroom.business.all.student_report import ReadingReportMaker
 from classroom.filters import ClassroomFilter
 from classroom.models import Classroom
 from classroom.permissions import IsTeacherOrReadOnly
 from classroom.serializers import (AddReadingExerciseSerializer,
                                    AddStudentSerializer, ClassroomSerializer,
                                    RemoveReadingExerciseSerializer,
-                                   RemoveStudentSerializer)
+                                   RemoveStudentSerializer,
+                                   StudentReadingReportSerializer)
+
+User = get_user_model()
 
 
 class ClassroomViewSet(ModelViewSet):
@@ -85,3 +91,16 @@ class ClassroomViewSet(ModelViewSet):
         classroom = self.get_object()
         teacher_business.remove_reading_exercises_to_classroom(classroom, exercise_pks)
         return Response()
+
+    @action(
+        methods=['GET'], detail=True, url_path='student-reading-report',
+        serializer_class=StudentReadingReportSerializer,
+    )
+    def student_reading_report(self, request, pk):
+        serializer = self.get_serializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        classroom = self.get_object()
+        student = get_object_or_404(User.students.all(), pk=serializer.validated_data['student'])
+        report_maker = ReadingReportMaker(classroom, student)
+        report = report_maker.make()
+        return Response(report)

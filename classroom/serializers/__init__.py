@@ -1,6 +1,7 @@
 from .classroom import (AddReadingExerciseSerializer, AddStudentSerializer,
                         ClassroomSerializer, RemoveReadingExerciseSerializer,
-                        RemoveStudentSerializer)
+                        RemoveStudentSerializer,
+                        StudentReadingReportSerializer)
 from .exercise import (ReadingExerciseSerializer,
                        ReadingExerciseSubmitSerializer)
 from .question import ReadingQuestionSerializer
