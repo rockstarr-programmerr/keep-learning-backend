@@ -52,12 +52,22 @@ class RemoveReadingExerciseSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
 
 
+class _PassageDetailSerializer(serializers.Serializer):
+    question_number = serializers.IntegerField()
+    submitted_answer = serializers.CharField()
+    possible_answers = serializers.ListField(child=serializers.CharField())
+    is_correct = serializers.BooleanField()
+
+
 class StudentReadingReportSerializer(serializers.Serializer):
     student = serializers.IntegerField(write_only=True)
     exercise = serializers.CharField(read_only=True)
-    passage_1 = serializers.IntegerField(read_only=True)
-    passage_2 = serializers.IntegerField(read_only=True)
-    passage_3 = serializers.IntegerField(read_only=True)
+    passage_1_total = serializers.IntegerField(read_only=True)
+    passage_2_total = serializers.IntegerField(read_only=True)
+    passage_3_total = serializers.IntegerField(read_only=True)
     total = serializers.IntegerField(read_only=True)
     band_score = serializers.FloatField(read_only=True)
     submitted = serializers.BooleanField(read_only=True)
+    passage_1_detail = _PassageDetailSerializer(read_only=True, many=True)
+    passage_2_detail = _PassageDetailSerializer(read_only=True, many=True)
+    passage_3_detail = _PassageDetailSerializer(read_only=True, many=True)

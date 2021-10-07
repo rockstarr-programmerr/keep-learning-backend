@@ -10,7 +10,7 @@ class ReadingQuestion(Question):
     passage = models.PositiveSmallIntegerField(default=1)
 
     class Meta:
-        ordering = ['exercise']
+        ordering = ['exercise', 'number']
 
     def __str__(self):
         return f'{self.exercise.identifier} | {self.get_question_type_display()}'
