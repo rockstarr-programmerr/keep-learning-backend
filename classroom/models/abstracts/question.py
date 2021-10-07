@@ -60,13 +60,17 @@ class Question(models.Model):
         return answers
 
     def check_answer(self, answer):
+        # NOTE: don't use .values_list('content', flat=True) here,
+        # because it will not utilize .prefetch_related('answers'),
+        # which lead to more DB queries
         possible_answers = self.answers.all()
+        possible_answers = [answer.content for answer in possible_answers]
 
         if self.is_fill_blank():
             answer = f' {answer} '  # Add 2 spaces to both side to help with regex matching
 
             for correct_answer in possible_answers:
-                regex = correct_answer.content
+                regex = correct_answer
                 if regex.startswith('('):
                     regex = r'(?:' + regex[1:]
 

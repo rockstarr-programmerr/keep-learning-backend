@@ -1,32 +1,14 @@
-from copy import copy
-
 from django.utils.translation import gettext as _
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 from account.serializers import UserSerializer
 from classroom.models import Classroom
 from classroom.utils.serializer import ValidateUniqueTogetherMixin
 
 
-class _StudentSerializer(UserSerializer):
-    reading_report_url = serializers.SerializerMethodField()
-
-    class Meta(UserSerializer.Meta):
-        fields = copy(UserSerializer.Meta.fields)
-        fields.append('reading_report_url')
-
-    def get_reading_report_url(self, student):
-        request = self.context['request']
-        classroom_pk = self.context['view'].kwargs['pk']
-        url = reverse('classroom-student-reading-report', kwargs={'pk': classroom_pk}, request=request)
-        url += f'?student={student.pk}'
-        return url
-
-
 class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedModelSerializer):
     teacher = UserSerializer(read_only=True)
-    students = _StudentSerializer(many=True, read_only=True)
+    students = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Classroom
