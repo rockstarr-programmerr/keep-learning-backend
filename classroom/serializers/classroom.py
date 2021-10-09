@@ -16,10 +16,13 @@ class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedMo
             'pk', 'url', 'name', 'description', 'create_datetime',
             'teacher', 'students', 'reading_exercises',
         ]
+        read_only_fields = [
+            'create_datetime', 'teacher',
+            'students', 'reading_exercises'
+        ]
         extra_kwargs = {
             'url': {'view_name': 'classroom-detail'},
             'reading_exercises': {'view_name': 'reading-exercise-detail'},
-            'create_datetime': {'read_only': True},
         }
 
     def validate_name(self, name):
