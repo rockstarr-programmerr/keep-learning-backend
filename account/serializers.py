@@ -37,6 +37,9 @@ class RegisterTeacherSerializer(UserSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
             'avatar_thumbnail': {'read_only': True},
+            'name': {'required': False},
+            'phone_number': {'required': False},
+            'avatar': {'required': False},
         }
 
 

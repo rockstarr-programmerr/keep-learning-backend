@@ -7,10 +7,10 @@ class IsTeacherOrReadOnly(IsAuthenticated):
 
     def has_permission(self, request, view):
         is_authenticated = super().has_permission(request, view)
-        is_teacher = request.user.is_teacher()
         return (
             is_authenticated and (
-                request.method in SAFE_METHODS or is_teacher
+                request.method in SAFE_METHODS or
+                request.user.is_teacher()
             )
         )
 
