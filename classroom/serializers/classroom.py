@@ -39,8 +39,8 @@ class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedMo
 
 class AddStudentSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    name = serializers.CharField(required=False, max_length=150)
-    phone_number = serializers.CharField(required=False, max_length=20)
+    name = serializers.CharField(max_length=150)
+    phone_number = serializers.CharField(required=False, allow_blank=True, max_length=20)
 
 
 class RemoveStudentSerializer(serializers.Serializer):
