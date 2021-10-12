@@ -59,6 +59,13 @@ class Question(models.Model):
             answers.append(answer.content)
         return answers
 
+    def get_choices_content(self):
+        return self.choices.split(self._DELEMITER)
+
+    @classmethod
+    def generate_choices_from_list(cls, choices):
+        return cls._DELEMITER.join(choices)
+
     def check_answer(self, answer):
         # NOTE: don't use .values_list('content', flat=True) here,
         # because it will not utilize .prefetch_related('answers'),

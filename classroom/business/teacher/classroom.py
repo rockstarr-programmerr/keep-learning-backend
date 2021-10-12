@@ -1,5 +1,6 @@
 import secrets
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from classroom.tasks import send_temp_password_for_new_students_task
@@ -51,3 +52,20 @@ def add_reading_exercises_to_classroom(classroom, exercise_pks, user):
 
 def remove_reading_exercises_to_classroom(classroom, exercise_pks):
     classroom.reading_exercises.remove(*exercise_pks)
+
+def upload_reading_exercise_image(image, request=None):
+    path = settings.MEDIA_ROOT / 'classroom' / 'reading_exercises' / 'uploaded_images' / image.name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        unique_name = path.stem + secrets.token_urlsafe(nbytes=8)
+        path = path.parent / f'{unique_name}{path.suffix}'
+
+    with open(path, 'wb+') as destination:
+        for chunk in image.chunks():
+            destination.write(chunk)
+
+    rpath = path.relative_to(settings.BASE_DIR)
+    url = '/' + str(rpath).replace('\\', '/')
+    if request:
+        url = request.build_absolute_uri(url)
+    return url

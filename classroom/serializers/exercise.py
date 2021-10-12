@@ -58,3 +58,11 @@ class ReadingExerciseSubmitSerializer(serializers.Serializer):
 
     class Meta:
         list_serializer_class = _SubmitAnswerListSerializer
+
+
+class ReadingExerciseUploadImgSerializer(serializers.Serializer):
+    image = serializers.ImageField(write_only=True)
+    image_url = serializers.URLField(read_only=True)
+
+    def validate_image(self, image):
+        return image  # TODO

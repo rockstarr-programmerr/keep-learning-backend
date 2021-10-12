@@ -2,13 +2,17 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from account.serializers import UserSerializer
-from classroom.models import Classroom
+from classroom.models import Classroom, ReadingExercise
 from classroom.utils.serializer import ValidateUniqueTogetherMixin
 
 
 class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedModelSerializer):
     teacher = UserSerializer(read_only=True)
     students = UserSerializer(many=True, read_only=True)
+    reading_exercises = serializers.PrimaryKeyRelatedField(
+        queryset=ReadingExercise.objects.all(),
+        many=True,
+    )
 
     class Meta:
         model = Classroom
@@ -22,7 +26,7 @@ class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedMo
         ]
         extra_kwargs = {
             'url': {'view_name': 'classroom-detail'},
-            'reading_exercises': {'view_name': 'reading-exercise-detail'},
+            # 'reading_exercises': {'view_name': 'reading-exercise-detail'},
         }
 
     def validate_name(self, name):

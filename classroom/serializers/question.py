@@ -5,7 +5,8 @@ from classroom.models import ReadingQuestion
 
 
 class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
-    answers = serializers.CharField(source='get_answers_content')
+    choices = serializers.ListField(source='get_choices_content')
+    answers = serializers.ListField(source='get_answers_content')
 
     class Meta:
         model = ReadingQuestion
@@ -25,6 +26,7 @@ class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
         attrs = super().validate(attrs)
         self._validate_question_not_exist(attrs)
         self._handle_get_answers_content(attrs)
+        self._handle_get_choices_content(attrs)
         return attrs
 
     def _validate_question_not_exist(self, attrs):
@@ -51,6 +53,11 @@ class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
     def _handle_get_answers_content(self, attrs):
         if 'get_answers_content' in attrs:
             attrs['answers'] = attrs.pop('get_answers_content')
+
+    def _handle_get_choices_content(self, attrs):
+        if 'get_choices_content' in attrs:
+            choices = attrs.pop('get_choices_content')
+            attrs['choices'] = ReadingQuestion.generate_choices_from_list(choices)
 
     def create(self, validated_data):
         has_answers = 'answers' in validated_data
