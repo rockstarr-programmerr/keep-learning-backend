@@ -60,6 +60,8 @@ class Question(models.Model):
         return answers
 
     def get_choices_content(self):
+        if not self.choices:
+            return []
         return self.choices.split(self._DELEMITER)
 
     @classmethod
