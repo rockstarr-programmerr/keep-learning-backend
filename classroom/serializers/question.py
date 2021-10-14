@@ -6,7 +6,7 @@ from classroom.models import ReadingQuestion
 
 class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
     choices = serializers.ListField(source='get_choices_content')
-    answers = serializers.SerializerMethodField()
+    answers = serializers.ListField(source='get_answers_content')
 
     class Meta:
         model = ReadingQuestion
@@ -21,13 +21,6 @@ class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
             'passage': {'min_value': 1},
             'number': {'min_value': 1},
         }
-
-    def get_answers(self, question):
-        user = self.context['request'].user
-        if user.is_teacher():
-            return question.get_answers_content()
-        else:
-            return []  # Of course we can't allow student to see the answers
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
