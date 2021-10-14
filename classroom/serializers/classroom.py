@@ -6,13 +6,19 @@ from classroom.models import Classroom, ReadingExercise
 from classroom.utils.serializer import ValidateUniqueTogetherMixin
 
 
+class _ReadingExerciseSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ReadingExercise
+        fields = ['pk', 'url', 'identifier']
+        extra_kwargs = {
+            'url': {'view_name': 'reading-exercise-detail'},
+        }
+
+
 class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedModelSerializer):
     teacher = UserSerializer(read_only=True)
     students = UserSerializer(many=True, read_only=True)
-    reading_exercises = serializers.PrimaryKeyRelatedField(
-        queryset=ReadingExercise.objects.all(),
-        many=True,
-    )
+    reading_exercises = _ReadingExerciseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Classroom
@@ -20,13 +26,9 @@ class ClassroomSerializer(ValidateUniqueTogetherMixin, serializers.HyperlinkedMo
             'pk', 'url', 'name', 'description', 'create_datetime',
             'teacher', 'students', 'reading_exercises',
         ]
-        read_only_fields = [
-            'create_datetime', 'teacher',
-            'students', 'reading_exercises'
-        ]
+        read_only_fields = ['create_datetime']
         extra_kwargs = {
             'url': {'view_name': 'classroom-detail'},
-            # 'reading_exercises': {'view_name': 'reading-exercise-detail'},
         }
 
     def validate_name(self, name):
