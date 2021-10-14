@@ -76,23 +76,25 @@ class Question(models.Model):
         possible_answers = [answer.content for answer in possible_answers]
 
         if self.is_fill_blank():
-            answer = f' {answer} '  # Add 2 spaces to both side to help with regex matching
-
-            for correct_answer in possible_answers:
-                regex = correct_answer
-                if regex.startswith('('):
-                    regex = r'(?:' + regex[1:]
-
-                regex = regex.replace(' (', r'(?:\s?')\
-                             .replace(')', r')?')
-                regex = r'\s*' + regex + r'\s*'
-
-                match = re.match(regex, answer)
-                if match:
-                    match_str = match.group(0)
-                    if match_str == answer:
-                        return True
-
-            return False
+            return self.check_fill_blank(answer, possible_answers)
         else:
             return answer in possible_answers
+
+    @staticmethod
+    def check_fill_blank(answer, possible_answers):
+        answer = f' {answer} '  # Add 2 spaces to both side to help with regex matching
+
+        for correct_answer in possible_answers:
+            regex = correct_answer
+            regex = regex.replace(r'(', r'(?:')\
+                         .replace(r' (?:', r'(?:\s?')\
+                         .replace(')', r')?')
+            regex = r'\s*' + regex + r'\s*'
+
+            match = re.match(regex, answer)
+            if match:
+                match_str = match.group(0)
+                if match_str == answer:
+                    return True
+
+        return False
