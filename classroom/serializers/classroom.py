@@ -68,9 +68,18 @@ class _PassageDetailSerializer(serializers.Serializer):
     is_correct = serializers.BooleanField()
 
 
+class _ExerciseSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ReadingExercise
+        fields = ['pk', 'url', 'identifier']
+        extra_kwargs = {
+            'url': {'view_name': 'reading-exercise-detail'}
+        }
+
+
 class StudentReadingReportSerializer(serializers.Serializer):
     student = serializers.IntegerField(write_only=True)
-    exercise = serializers.CharField(read_only=True)
+    exercise = _ExerciseSerializer(read_only=True)
     passage_1_total = serializers.IntegerField(read_only=True)
     passage_2_total = serializers.IntegerField(read_only=True)
     passage_3_total = serializers.IntegerField(read_only=True)

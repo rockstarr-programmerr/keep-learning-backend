@@ -41,7 +41,7 @@ class ReadingReportMaker:
     @staticmethod
     def new_report(exercise):
         return {
-            'exercise': exercise.identifier,
+            'exercise': exercise,
             'passage_1_total': 0,
             'passage_2_total': 0,
             'passage_3_total': 0,
