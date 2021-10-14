@@ -99,9 +99,15 @@ class ClassroomViewSet(ModelViewSet):
     def student_reading_report(self, request, pk):
         serializer = self.get_serializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
+
+        student_pk = serializer.validated_data['student_pk']
+        exercise_pk = serializer.validated_data.get('exercise_pk')
+        show_detail = serializer.validated_data['show_detail']
+
         classroom = self.get_object()
-        student = get_object_or_404(User.students.all(), pk=serializer.validated_data['student'])
+        student = get_object_or_404(User.students.all(), pk=student_pk)
         report_maker = ReadingReportMaker(classroom, student)
-        report = report_maker.make()
+        report = report_maker.make(exercise_pk=exercise_pk, detail=show_detail)
+
         serializer = self.get_serializer(instance=report, many=True)
         return Response(serializer.data)

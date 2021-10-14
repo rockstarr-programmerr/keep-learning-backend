@@ -61,13 +61,6 @@ class RemoveReadingExerciseSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
 
 
-class _PassageDetailSerializer(serializers.Serializer):
-    question_number = serializers.IntegerField()
-    submitted_answer = serializers.CharField()
-    possible_answers = serializers.ListField(child=serializers.CharField())
-    is_correct = serializers.BooleanField()
-
-
 class _ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ReadingExercise
@@ -77,8 +70,18 @@ class _ExerciseSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+class _PassageDetailSerializer(serializers.Serializer):
+    question_number = serializers.IntegerField()
+    submitted_answer = serializers.CharField()
+    possible_answers = serializers.ListField(child=serializers.CharField())
+    is_correct = serializers.BooleanField()
+
+
 class StudentReadingReportSerializer(serializers.Serializer):
-    student = serializers.IntegerField(write_only=True)
+    student_pk = serializers.IntegerField(write_only=True)
+    exercise_pk = serializers.IntegerField(write_only=True, required=False)
+    show_detail = serializers.BooleanField(write_only=True, default=True)
+
     exercise = _ExerciseSerializer(read_only=True)
     passage_1_total = serializers.IntegerField(read_only=True)
     passage_2_total = serializers.IntegerField(read_only=True)

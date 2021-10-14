@@ -6,11 +6,14 @@ class ReadingReportMaker:
         self.classroom = classroom
         self.student = student
 
-    def make(self):
+    def make(self, exercise_pk=None, detail=True):
         reports = []
         exercises = self.get_exercises()
 
         for exercise in exercises:
+            if exercise_pk and exercise_pk != exercise.pk:
+                continue
+
             report = self.new_report(exercise)
             submission = self.get_submission(exercise)
 
@@ -33,6 +36,11 @@ class ReadingReportMaker:
                     report['passage_3_total']
                 )
                 report['band_score'] = self.calculate_band(report['total'])
+
+            if not detail:
+                del report['passage_1_detail']
+                del report['passage_2_detail']
+                del report['passage_3_detail']
 
             reports.append(report)
 
