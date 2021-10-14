@@ -22,6 +22,13 @@ class ReadingQuestionSerializer(serializers.HyperlinkedModelSerializer):
             'number': {'min_value': 1},
         }
 
+    def to_representation(self, question):
+        repr_ = super().to_representation(question)
+        user = self.context['request'].user
+        if user.is_student():
+            repr_['answers'] = []  # Of course don't allow student to see answers
+        return repr_
+
     def validate(self, attrs):
         attrs = super().validate(attrs)
         self._validate_question_not_exist(attrs)
