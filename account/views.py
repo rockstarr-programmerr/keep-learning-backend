@@ -1,18 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 from django.utils.decorators import classonlymethod, method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from account import business
-from account.managers import UserTypes
-from account.serializers import (MeSerializer, RegisterTeacherSerializer,
-                                 UserSerializer)
+from account.serializers import (ChangePasswordSerializer, MeSerializer,
+                                 RegisterTeacherSerializer, UserSerializer)
 
 User = get_user_model()
 
@@ -65,6 +65,28 @@ class UserViewSet(mixins.ListModelMixin,
         teacher = business.register_teacher(serializer.validated_data)
         serializer = self.get_serializer(instance=teacher)
         return Response(serializer.data)
+
+    @action(
+        detail=False, methods=['POST'],
+        url_path='change-password',
+        serializer_class=ChangePasswordSerializer,
+    )
+    def change_password(self, request):
+        """
+        Change logged-in user's password, return 403 if `current_password` is not correct.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        current_password = serializer.validated_data['current_password']
+        new_password = serializer.validated_data['new_password']
+
+        user = self.request.user
+        if not user.check_password(current_password):
+            raise PermissionDenied(_('Wrong password.'))
+
+        user.set_password(new_password)
+        user.save()
+        return Response()
 
 
 class MeViewSet(mixins.ListModelMixin,
