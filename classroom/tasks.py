@@ -34,7 +34,9 @@ def send_temp_password_for_new_students(student_emails, temp_passwords, teacher_
             message,
             alternatives=[
                 (html_message, 'text/html')
-            ]
+            ],
+            from_email='rockstarrprogrammerr@gmail.com',
+            to=[student_email],
         )
         messages.append(message)
 

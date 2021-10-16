@@ -13,12 +13,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             'pk', 'url', 'name', 'email', 'phone_number',
             'user_type', 'avatar', 'avatar_thumbnail',
+            'last_login',
         ]
         extra_kwargs = {
             'avatar': {'allow_null': True},
             'avatar_thumbnail': {'read_only': True},
             'user_type': {'read_only': True},
-            'email': {'read_only': True}
+            'email': {'read_only': True},
+            'last_login': {'read_only': True},
         }
 
     def validate(self, attrs):

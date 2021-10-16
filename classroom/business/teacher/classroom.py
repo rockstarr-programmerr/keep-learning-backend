@@ -53,6 +53,26 @@ def add_reading_exercises_to_classroom(classroom, exercise_pks, user):
 def remove_reading_exercises_to_classroom(classroom, exercise_pks):
     classroom.reading_exercises.remove(*exercise_pks)
 
+
+def resend_password_emails(classroom, email):
+    student = User.students.filter(email=email).first()
+
+    # If `last_login` is not None, meaning student already logged in successfully
+    # so don't touch their password
+    if not student or student.last_login:
+        return
+
+    temp_password = secrets.token_urlsafe(nbytes=8)
+    student.set_password(temp_password)
+    student.save()
+
+    temp_passwords = {email: temp_password}
+
+    send_temp_password_for_new_students_task.delay(
+        [email], temp_passwords, classroom.teacher.name
+    )
+
+
 def upload_reading_exercise_image(image, request=None):
     path = settings.MEDIA_ROOT / 'classroom' / 'reading_exercises' / 'uploaded_images' / image.name
     path.parent.mkdir(parents=True, exist_ok=True)

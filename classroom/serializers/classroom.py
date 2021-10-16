@@ -61,6 +61,10 @@ class RemoveReadingExerciseSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
 
 
+class ResendPasswordEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
 class _ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ReadingExercise

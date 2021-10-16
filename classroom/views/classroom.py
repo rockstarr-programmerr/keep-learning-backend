@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from classroom.business.teacher import classroom as teacher_business
 from classroom.business.all.student_report import ReadingReportMaker
+from classroom.business.teacher import classroom as teacher_business
 from classroom.filters import ClassroomFilter
 from classroom.models import Classroom
 from classroom.permissions import IsTeacherOrReadOnly
@@ -14,6 +15,7 @@ from classroom.serializers import (AddReadingExerciseSerializer,
                                    AddStudentSerializer, ClassroomSerializer,
                                    RemoveReadingExerciseSerializer,
                                    RemoveStudentSerializer,
+                                   ResendPasswordEmailSerializer,
                                    StudentReadingReportSerializer)
 
 User = get_user_model()
@@ -111,3 +113,14 @@ class ClassroomViewSet(ModelViewSet):
 
         serializer = self.get_serializer(instance=report, many=True)
         return Response(serializer.data)
+
+    @action(
+        methods=['POST'], detail=True, url_path='resend-password-email',
+        serializer_class=ResendPasswordEmailSerializer,
+    )
+    def resend_password_email(self, request, pk):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        classroom = self.get_object()
+        teacher_business.resend_password_emails(classroom, serializer.validated_data['email'])
+        return Response(status=status.HTTP_202_ACCEPTED)
