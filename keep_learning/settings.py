@@ -56,7 +56,8 @@ env = environ.Env(
     DEFAULT_FROM_EMAIL=(str, ''),
 
     CELERY_BROKER_URL=(str, 'amqp://kl_user:kl_password@localhost:5672/kl_vhost'),
-    WEB_LOGIN_URL=(str, 'http://localhost:8080/login/')
+    WEB_LOGIN_URL=(str, 'http://localhost:8080/login'),
+    WEB_RESET_PASSWORD_URL=(str, 'http://localhost:8080/new-password'),
 )
 # reading .env file
 env_file = str(BASE_DIR / '.env')
@@ -281,5 +282,6 @@ if IS_TESTING:
         del REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']
 
 WEB_LOGIN_URL = env('WEB_LOGIN_URL')
+WEB_RESET_PASSWORD_URL = env('WEB_RESET_PASSWORD_URL')
 
 MAX_UPLOAD_SIZE_MEGABYTES = 10
