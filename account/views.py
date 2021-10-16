@@ -122,7 +122,9 @@ class UserViewSet(mixins.ListModelMixin,
     def reset_password(self, request):
         """
         Reset user's password.
+
         Return 403 if `token` is not valid.
+
         Return 404 if `uid` is not valid.
         """
         serializer = self.get_serializer(data=request.data)

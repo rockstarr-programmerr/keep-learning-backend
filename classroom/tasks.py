@@ -21,7 +21,7 @@ def send_temp_password_for_new_students(student_emails, temp_passwords, teacher_
             'student_email': student_email,
             'teacher_name': teacher_name,
             'temp_password': temp_password,
-            'site_name': 'Keep learning',
+            'site_name': 'Tango',
         }
 
         title = loader.render_to_string('classroom/temp_passwords/email_title.txt', context)
