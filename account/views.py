@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.utils.decorators import classonlymethod, method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import mixins
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from account import business
+from account.managers import UserTypes
 from account.serializers import (MeSerializer, RegisterTeacherSerializer,
                                  UserSerializer)
 
@@ -34,7 +36,23 @@ class UserViewSet(mixins.ListModelMixin,
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        return User.objects.all()  # TODO: if teacher: return students, if student: return teacher and classmates
+        user = self.request.user
+
+        if user.is_teacher():
+            classrooms = user.classrooms_teaching.all()
+        else:
+            classrooms = user.classrooms_studying.all()
+
+        classrooms = classrooms.select_related('teacher').prefetch_related('students')
+
+        users_pk = []
+        for classroom in classrooms:
+            teacher = classroom.teacher
+            students = classroom.students.all()
+            users_pk.append(teacher.pk)
+            users_pk.extend(student.pk for student in students)
+
+        return User.objects.filter(pk__in=users_pk)
 
     @action(
         methods=['POST'], detail=False, url_path='register-teacher',

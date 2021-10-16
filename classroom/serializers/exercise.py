@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
@@ -65,4 +66,10 @@ class ReadingExerciseUploadImgSerializer(serializers.Serializer):
     image_url = serializers.URLField(read_only=True)
 
     def validate_image(self, image):
-        return image  # TODO
+        size = image.size / 1e6  # bytes to megabytes
+        if size > settings.MAX_UPLOAD_SIZE_MEGABYTES:
+            raise serializers.ValidationError(
+                _('File size must not exceed %dMB.') % settings.MAX_UPLOAD_SIZE_MEGABYTES,
+                code='exceed_max_upload_size'
+            )
+        return image

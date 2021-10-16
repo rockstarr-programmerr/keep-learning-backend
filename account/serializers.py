@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 User = get_user_model()
@@ -15,6 +17,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'avatar': {'allow_null': True},
             'avatar_thumbnail': {'read_only': True},
             'user_type': {'read_only': True},
+            'email': {'read_only': True}
         }
 
     def validate(self, attrs):
@@ -24,7 +27,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return attrs
 
     def validate_avatar(self, img):
-        return img  # TODO
+        size = img.size / 1e6  # bytes to megabytes
+        if size > settings.MAX_UPLOAD_SIZE_MEGABYTES:
+            raise serializers.ValidationError(
+                _('File size must not exceed %dMB.') % settings.MAX_UPLOAD_SIZE_MEGABYTES,
+                code='exceed_max_upload_size'
+            )
+        return img
 
 
 class RegisterTeacherSerializer(UserSerializer):
