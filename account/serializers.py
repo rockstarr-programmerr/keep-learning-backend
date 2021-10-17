@@ -48,7 +48,8 @@ class RegisterTeacherSerializer(UserSerializer):
         model = User
         fields = [
             'pk', 'url', 'name', 'email', 'phone_number',
-            'password', 'avatar', 'avatar_thumbnail',
+            'user_type', 'avatar', 'avatar_thumbnail',
+            'last_login', 'password',
         ]
         extra_kwargs = {
             'password': {'write_only': True, 'validators': [validate_password]},
@@ -57,6 +58,9 @@ class RegisterTeacherSerializer(UserSerializer):
             'phone_number': {'required': False},
             'avatar': {'required': False},
         }
+        read_only_fields = [
+            'avatar_thumbnail', 'user_type', 'last_login'
+        ]
 
 
 class MeSerializer(UserSerializer):
