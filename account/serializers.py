@@ -65,6 +65,7 @@ class MeSerializer(UserSerializer):
 
 class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
 
 
 class EmailResetPasswordLinkSerializer(serializers.Serializer):
