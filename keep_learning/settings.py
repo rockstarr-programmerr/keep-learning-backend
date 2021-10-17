@@ -54,6 +54,10 @@ env = environ.Env(
     EMAIL_HOST_USER=(str, ''),
     EMAIL_HOST_PASSWORD=(str, ''),
     DEFAULT_FROM_EMAIL=(str, ''),
+
+    CELERY_BROKER_URL=(str, 'amqp://kl_user:kl_password@localhost:5672/kl_vhost'),
+    WEB_LOGIN_URL=(str, 'http://localhost:8080/login'),
+    WEB_RESET_PASSWORD_URL=(str, 'http://localhost:8080/new-password'),
 )
 # reading .env file
 env_file = str(BASE_DIR / '.env')
@@ -81,12 +85,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
+    'corsheaders',
+    'crispy_forms',
     'account.apps.AccountConfig',
+    'classroom.apps.ClassroomConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -204,7 +215,7 @@ REST_FRAMEWORK = {
     },
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 25,
+    'PAGE_SIZE': 100,
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.OrderingFilter',
@@ -246,6 +257,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
 EMAIL_BACKEND = env('EMAIL_BACKEND')
 EMAIL_FILE_PATH = env('EMAIL_FILE_PATH')
 EMAIL_HOST = env('EMAIL_HOST')
@@ -267,3 +280,8 @@ IS_TESTING = 'test' in sys.argv
 if IS_TESTING:
     if 'DEFAULT_THROTTLE_RATES' in REST_FRAMEWORK:
         del REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']
+
+WEB_LOGIN_URL = env('WEB_LOGIN_URL')
+WEB_RESET_PASSWORD_URL = env('WEB_RESET_PASSWORD_URL')
+
+MAX_UPLOAD_SIZE_MEGABYTES = 10

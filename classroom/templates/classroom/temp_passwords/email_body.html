@@ -1,0 +1,25 @@
+{% load i18n %}
+{% autoescape off %}
+
+<p>{% translate 'Hi there!' %}</p>
+
+{% blocktranslate %}
+<p>You're receiving this email because teacher {{ teacher_name }} have created an account for you at <b>{{ site_name }}</b>.</p>
+{% endblocktranslate %}
+
+<p>{% translate 'Your account information:' %}</p>
+<ul>
+    <li>{% translate 'Email' %}: {{ student_email }}</li>
+    <li>{% translate 'Temporary password' %}: {{ temp_password }}</li>
+</ul>
+
+{% translate "Please click this link and login with the above information:" %}
+<a href="{{ url }}">{{ url }}</a>
+
+<p>After login, we highly recommend you to <b>change your password</b>.</p>
+
+{% blocktranslate %}
+Welcome to teacher {{ teacher_name }}'s class :)
+{% endblocktranslate %}
+
+{% endautoescape %}
