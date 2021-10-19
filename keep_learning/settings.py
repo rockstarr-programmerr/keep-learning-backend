@@ -58,6 +58,13 @@ env = environ.Env(
     CELERY_BROKER_URL=(str, 'amqp://kl_user:kl_password@localhost:5672/kl_vhost'),
     WEB_LOGIN_URL=(str, 'http://localhost:8080/login'),
     WEB_RESET_PASSWORD_URL=(str, 'http://localhost:8080/new-password'),
+    DEFAULT_FILE_STORAGE=(str, 'django.core.files.storage.FileSystemStorage'),
+
+    AWS_S3_ACCESS_KEY_ID=(str, ''),
+    AWS_S3_SECRET_ACCESS_KEY=(str, ''),
+    AWS_STORAGE_BUCKET_NAME=(str, ''),
+    AWS_S3_REGION_NAME=(str, ''),
+    AWS_S3_FILE_OVERWRITE=(bool, False),
 )
 # reading .env file
 env_file = str(BASE_DIR / '.env')
@@ -285,3 +292,11 @@ WEB_LOGIN_URL = env('WEB_LOGIN_URL')
 WEB_RESET_PASSWORD_URL = env('WEB_RESET_PASSWORD_URL')
 
 MAX_UPLOAD_SIZE_MEGABYTES = 10
+
+DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE')
+
+AWS_S3_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID')
+AWS_S3_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
+AWS_S3_FILE_OVERWRITE = env('AWS_S3_FILE_OVERWRITE')
