@@ -1,7 +1,9 @@
 import secrets
+import os
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.files.storage import default_storage
 
 from classroom.tasks import send_temp_password_for_new_students_task
 
@@ -73,19 +75,15 @@ def resend_password_emails(classroom, email):
     )
 
 
-def upload_reading_exercise_image(image, request=None):
-    path = settings.MEDIA_ROOT / 'classroom' / 'reading_exercises' / 'uploaded_images' / image.name
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists():
-        unique_name = path.stem + secrets.token_urlsafe(nbytes=8)
-        path = path.parent / f'{unique_name}{path.suffix}'
+def upload_reading_exercise_image(image):
+    directory = 'classroom/reading_exercises/uploaded_images'
+    path = f'{directory}/{image.name}'
 
-    with open(path, 'wb+') as destination:
-        for chunk in image.chunks():
-            destination.write(chunk)
+    if default_storage.exists(path):
+        img_name, img_ext = os.path.splitext(image.name)
+        unique_name = img_name + secrets.token_urlsafe(nbytes=8)
+        path = f'{directory}/{unique_name}{img_ext}'
 
-    rpath = path.relative_to(settings.BASE_DIR)
-    url = '/' + str(rpath).replace('\\', '/')
-    if request:
-        url = request.build_absolute_uri(url)
+    default_storage.save(path, image)
+    url = default_storage.url(path)
     return url
