@@ -43,6 +43,6 @@ class ReadingExerciseViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         image = serializer.validated_data['image']
-        image_url = business.upload_reading_exercise_image(image, request=request)
+        image_url = business.upload_reading_exercise_image(image)
         serializer = self.get_serializer(instance={'image_url': image_url})
         return Response(serializer.data)

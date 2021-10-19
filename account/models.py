@@ -7,11 +7,6 @@ from PIL import Image
 from account.managers import (CustomUserManager, StudentManager,
                               TeacherManager, UserTypes)
 
-AVATAR_WIDTH = 256
-AVATAR_HEIGHT = 256
-AVATAR_THUMBNAIL_WIDTH = 64
-AVATAR_THUMBNAIL_HEIGHT = 64
-
 
 class User(AbstractUser):
     Types = UserTypes
@@ -58,21 +53,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.name} ({self.email}) - {self.get_user_type_display()}'
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self._make_thumbnail(self.avatar, AVATAR_WIDTH, AVATAR_HEIGHT)
-        self._make_thumbnail(self.avatar_thumbnail, AVATAR_THUMBNAIL_WIDTH, AVATAR_THUMBNAIL_HEIGHT)
-
-    @staticmethod
-    def _make_thumbnail(image, width, height):
-        if image and (
-            image.width > width or
-            image.height > height
-        ):
-            with Image.open(image.path) as f:
-                f.thumbnail((width, height))
-                f.save(image.path)
 
     def is_teacher(self):
         return self.user_type == self.Types.TEACHER

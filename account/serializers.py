@@ -1,7 +1,11 @@
+import io
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.core.files.images import ImageFile
 from django.utils.translation import gettext as _
+from PIL import Image
 from rest_framework import serializers
 
 User = get_user_model()
@@ -26,7 +30,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     def validate(self, attrs):
         attrs = super().validate(attrs)
         if 'avatar' in attrs:
-            attrs['avatar_thumbnail'] = attrs['avatar']
+            avatar = attrs['avatar']
+            if avatar:
+                attrs['avatar'] = self._make_thumbnail(avatar, 256, 256)
+                attrs['avatar_thumbnail'] = self._make_thumbnail(avatar, 64, 64)
+            else:
+                attrs['avatar_thumbnail'] = avatar  # When remove avatar, also remove avatar_thumbnail
         return attrs
 
     def validate_avatar(self, img):
@@ -41,6 +50,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         return img
+
+    @staticmethod
+    def _make_thumbnail(image, width, height):
+        thumb = Image.open(image)
+        thumb.thumbnail((width, height))
+
+        buffer = io.BytesIO()
+        thumb.save(buffer, format=thumb.format)
+
+        data = ImageFile(buffer, name=image.name)
+        return data
 
 
 class RegisterTeacherSerializer(UserSerializer):
