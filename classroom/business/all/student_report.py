@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from .band_score import BAND_SCORE_MAPPER
 
 
@@ -19,6 +21,9 @@ class ReadingReportMaker:
 
             if submission:
                 report['submitted'] = True
+                report['time_taken'] = submission.time_taken
+                report['submit_datetime'] = submission.submit_datetime
+
                 questions = exercise.questions.all().prefetch_related('answers')
                 answers = submission.answers.all()
 
@@ -50,6 +55,8 @@ class ReadingReportMaker:
     def new_report(exercise):
         return {
             'exercise': exercise,
+            'time_taken': timedelta(seconds=0),
+            'submit_datetime': None,
             'passage_1_total': 0,
             'passage_2_total': 0,
             'passage_3_total': 0,
