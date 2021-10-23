@@ -1,9 +1,9 @@
-import secrets
 import os
+import secrets
 
 from django.contrib.auth import get_user_model
-from django.core.files.storage import default_storage
 
+from classroom.storages import ExerciseImageStorage
 from classroom.tasks import send_temp_password_for_new_students_task
 
 User = get_user_model()
@@ -75,14 +75,16 @@ def resend_password_emails(classroom, email):
 
 
 def upload_reading_exercise_image(image):
+    storage = ExerciseImageStorage()
+
     directory = 'classroom/reading_exercises/uploaded_images'
     path = f'{directory}/{image.name}'
 
-    if default_storage.exists(path):
+    if storage.exists(path):
         img_name, img_ext = os.path.splitext(image.name)
         unique_name = img_name + secrets.token_urlsafe(nbytes=8)
         path = f'{directory}/{unique_name}{img_ext}'
 
-    default_storage.save(path, image)
-    url = default_storage.url(path)
+    storage.save(path, image)
+    url = storage.url(path)
     return url
