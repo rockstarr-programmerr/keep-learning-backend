@@ -27,7 +27,7 @@ class ReadingExerciseViewSet(ModelViewSet):
     def submit_answers(self, request, pk):
         """Student submit their answer to this exercise.
         """
-        serializer = self.get_serializer(data=request.data, many=True)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         exercise = self.get_object()
         serializer.save(exercise=exercise)
