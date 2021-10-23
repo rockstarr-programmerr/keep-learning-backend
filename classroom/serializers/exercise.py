@@ -27,7 +27,17 @@ class ReadingExerciseSerializer(ValidateUniqueTogetherMixin, serializers.Hyperli
         return super().save(**kwargs)
 
 
-class _SubmitAnswerListSerializer(serializers.ListSerializer):
+class _ReadingExerciseAnswerSerializer(serializers.Serializer):
+    question_number = serializers.IntegerField(min_value=1)
+    content = serializers.CharField()
+
+
+class ReadingExerciseSubmitSerializer(serializers.Serializer):
+    time_taken = serializers.DurationField(
+        help_text='Number of seconds, or a string in this format: "[DD] [HH:[MM:]]ss[.uuuuuu]".'
+    )
+    answers = _ReadingExerciseAnswerSerializer(many=True)
+
     def save(self, exercise=None):
         student = self.context['request'].user
         if exercise.submissions.filter(submitter=student).exists():
@@ -38,11 +48,16 @@ class _SubmitAnswerListSerializer(serializers.ListSerializer):
         self._create_submission_answers(submission)
 
     def _create_submission(self, student, exercise):
-        return ReadingSubmission.objects.create(submitter=student, exercise=exercise)
+        time_taken = self.validated_data['time_taken']
+        return ReadingSubmission.objects.create(
+            submitter=student,
+            exercise=exercise,
+            time_taken=time_taken,
+        )
 
     def _create_submission_answers(self, submission):
         answers_to_create = []
-        for answer in self.validated_data:
+        for answer in self.validated_data['answers']:
             answers_to_create.append(
                 ReadingSubmissionAnswer(
                     submission=submission,
@@ -51,14 +66,6 @@ class _SubmitAnswerListSerializer(serializers.ListSerializer):
                 )
             )
         ReadingSubmissionAnswer.objects.bulk_create(answers_to_create)
-
-
-class ReadingExerciseSubmitSerializer(serializers.Serializer):
-    question_number = serializers.IntegerField(min_value=1)
-    content = serializers.CharField()
-
-    class Meta:
-        list_serializer_class = _SubmitAnswerListSerializer
 
 
 class ReadingExerciseUploadImgSerializer(serializers.Serializer):

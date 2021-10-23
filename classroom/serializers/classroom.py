@@ -87,6 +87,8 @@ class StudentReadingReportSerializer(serializers.Serializer):
     show_detail = serializers.BooleanField(write_only=True, default=True)
 
     exercise = _ExerciseSerializer(read_only=True)
+    time_taken = serializers.DurationField(read_only=True)
+    submit_datetime = serializers.DateTimeField(read_only=True)
     passage_1_total = serializers.IntegerField(read_only=True)
     passage_2_total = serializers.IntegerField(read_only=True)
     passage_3_total = serializers.IntegerField(read_only=True)

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -10,6 +12,7 @@ class ReadingSubmission(models.Model):
     exercise = models.ForeignKey(ReadingExercise, on_delete=models.CASCADE, related_name='submissions')
     submitter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reading_submissions')
     submit_datetime = models.DateTimeField(auto_now_add=True)
+    time_taken = models.DurationField(default=timedelta(seconds=0))
 
     class Meta:
         ordering = ['exercise', 'submitter', 'submit_datetime']

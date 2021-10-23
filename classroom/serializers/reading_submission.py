@@ -12,7 +12,8 @@ class ReadingSubmissionSerializer(serializers.HyperlinkedModelSerializer):
         model = ReadingSubmission
         fields = [
             'pk', 'url', 'exercise',
-            'submitter', 'submit_datetime', 'answers',
+            'submitter', 'submit_datetime',
+            'time_taken', 'answers',
         ]
         extra_kwargs = {
             'url': {'view_name': 'reading-submission-detail'},
