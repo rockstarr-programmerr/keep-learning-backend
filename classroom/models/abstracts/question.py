@@ -68,7 +68,7 @@ class Question(models.Model):
     def generate_choices_from_list(cls, choices):
         return cls._DELEMITER.join(choices)
 
-    def check_answer(self, answer):
+    def check_answer(self, answer, related_answers=None):
         # NOTE: don't use .values_list('content', flat=True) here,
         # because it will not utilize .prefetch_related('answers'),
         # which lead to more DB queries
@@ -78,7 +78,10 @@ class Question(models.Model):
         if self.is_fill_blank():
             return self.check_fill_blank(answer, possible_answers)
         else:
-            return answer in possible_answers
+            if related_answers:
+                return answer in possible_answers and answer not in related_answers
+            else:
+                return answer in possible_answers
 
     @staticmethod
     def check_fill_blank(answer, possible_answers):
