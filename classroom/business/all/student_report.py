@@ -91,20 +91,39 @@ class ReadingReportMaker:
 
         score = 0
         details = []
+        related_answers = []
+        related_remains = 0
+
         for question in questions:
             detail = self.new_detail()
             answer = self.get_answer(answers, question)
+            possible_answers = question.get_answers_content()
 
             detail['question_number'] = question.number
-            detail['possible_answers'] = question.get_answers_content()
+            detail['possible_answers'] = possible_answers
 
+            is_related = len(possible_answers) > 1
+            if not is_related:
+                related_answers = []
+            elif not related_remains:
+                related_remains = len(possible_answers)
+                related_answers = []
+
+            is_correct = False
             if answer:
-                is_correct = question.check_answer(answer.content)
+                is_correct = question.check_answer(answer.content, related_answers=related_answers)
                 if is_correct:
                     score += 1
 
                 detail['submitted_answer'] = answer.content
                 detail['is_correct'] = is_correct
+
+            if related_remains:
+                related_remains -= 1
+                if not related_remains:
+                    related_answers = []
+                elif answer and is_correct:
+                    related_answers.append(answer.content)
 
             details.append(detail)
 
