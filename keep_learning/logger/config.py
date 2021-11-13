@@ -76,15 +76,15 @@ def logging_config(base_dir):
                 'level': 'INFO',
                 'propagate': False,
             },
-            'companion': {
+            'account': {
                 'handlers': ['console', 'file_info', 'file_warning', 'file_error', 'mail_admins'],
                 'level': 'INFO',
             },
-            'split_the_bill': {
+            'classroom': {
                 'handlers': ['console', 'file_info', 'file_warning', 'file_error', 'mail_admins'],
                 'level': 'INFO',
             },
-            'user': {
+            'keep_learning': {
                 'handlers': ['console', 'file_info', 'file_warning', 'file_error', 'mail_admins'],
                 'level': 'INFO',
             },
